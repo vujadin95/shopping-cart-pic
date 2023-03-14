@@ -6,6 +6,23 @@ const photosUrl =
 
 function ContextProvider(props) {
   const [allPhotos, setAllPhotos] = useState([]);
+  const [cartItems, setCartItems] = useState([]);
+
+  function toggleFavorited(id) {
+    setAllPhotos((prevState) =>
+      prevState.map((item) =>
+        item.id === id ? { ...item, isFavorite: !item.isFavorite } : item
+      )
+    );
+  }
+
+  function addPhotoToCartItems(obj) {
+    setCartItems((prevState) => [...prevState, obj]);
+  }
+
+  function removePhotoFromCartItems(id) {
+    setCartItems((prevState) => prevState.filter((item) => item.id !== id));
+  }
 
   useEffect(() => {
     fetch(`${photosUrl}`)
@@ -16,7 +33,18 @@ function ContextProvider(props) {
   }, []);
 
   return (
-    <Context.Provider value={{ allPhotos }}>{props.children}</Context.Provider>
+    <Context.Provider
+      value={{
+        allPhotos,
+        toggleFavorited,
+        addPhotoToCartItems,
+        cartItems,
+        removePhotoFromCartItems,
+        setCartItems,
+      }}
+    >
+      {props.children}
+    </Context.Provider>
   );
 }
 
